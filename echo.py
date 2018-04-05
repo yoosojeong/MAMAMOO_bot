@@ -18,7 +18,6 @@ update_id = None
 start = True
 
 def start(bot):
-    """Start message"""
 
     global update_id
     # Request updates after the last update_id
@@ -33,18 +32,20 @@ def start(bot):
     if update.message.text != "/start":
         if name is None:
          name = update.message.text
-         update.message.reply_text(f"{name}무무~ 반가워 \n실시간 멜론 차트 순위를 보고싶다면 'melon'\n나와 미니게임을 하고싶다면 'game' 를 입력해줘!")
+         update.message.reply_text(f"{name}무무~ 반가워")
 
-         return name
+         echo(bot, name)
+
 
 def echo(bot, name):
-    """Echo the message the user sent."""
 
     global update_id
     # Request updates after the last update_id
 
     for update in bot.get_updates(offset=update_id, timeout=10):
         update_id = update.update_id + 1
+
+        update.message.reply_text(f"{name}무무~ 실시간 멜론 차트 순위를 보고싶다면 'melon' 나와 게임을 하고싶다면 'game'을 입력해줘! (그만하기 'exit')");
 
         if update.message:  # your bot can receive updates without messages
             # Reply to the message
@@ -54,9 +55,10 @@ def echo(bot, name):
             if(update.message.text == "game"):
                 game(bot, update, name)
 
+            if(update.message.text == "exit"):
+                exit(bot, update)
 
 def melon(bot,update,name):
-    """Send a message when the command /start is issued."""
     update.message.reply_text("현재 마마무의 멜론차트 순위누~ 오늘도 숨스열스~")
     req = requests.get('https://www.melon.com/chart/index.htm')
     html = req.text
@@ -74,8 +76,8 @@ def melon(bot,update,name):
             update.message.reply_text(f"{title.text} - {my_titles[i-1].text} 순위 : {i//2}위")
         i = i + 1
     echo(bot,name)
+
 def game(bot,update,name):
-    """Send a message when the command /start is issued."""
     update.message.reply_text("휘인봇과 함께하는 숫자~야구")
     sleep(1)
     update.message.reply_text("나는 3개의 숫자를 마음 속으로 생각했어!")
@@ -124,8 +126,9 @@ def game(bot,update,name):
         update.message.reply_text(f"나의 승이누~~")
 
     echo(bot, name)
-def exit(bot,update,error):
-    pass
+def exit(bot,update):
+    update.message.reply_text(f"오늘도 고맙무~")
+    return 0
 def main():
     """Run the bot."""
     global update_id
@@ -149,18 +152,15 @@ def main():
     if(update.message.text == "/start"):
         update.message.reply_text("안녕 무무 어서와! 나는 마마무 채팅 봇이야~")
 
-        start(bot)
-        name = start(bot)
 
-        if name is not None:
-            while True:
-                try:
-                    echo(bot, name)
-                except NetworkError:
-                    sleep(1)
-                except Unauthorized:
-                    # The user has removed or blocked the bot.
-                    update_id += 1
+        while True:
+            try:
+               start(bot)
+            except NetworkError:
+                sleep(1)
+            except Unauthorized:
+                # The user has removed or blocked the bot.
+                update_id += 1
 
 if __name__ == '__main__':
     main()
