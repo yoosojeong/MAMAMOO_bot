@@ -123,7 +123,7 @@ def game(bot,update,name):
     if strike == 4:
         update.message.reply_text(f"{name}무무의 승이누~")
     elif ball == 4:
-        update.message.reply_text(f"나의 승이누~~")
+        update.message.reply_text(f"나의 승이누~")
 
     echo(bot, name)
 def exit(bot,update):
