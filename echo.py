@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Simple Bot to reply to Telegram messages.
-   This is built on the API wrappe.
-   As a MAMAMOO fan, I wanted to talk to MAMAMOO.
-   Then I added the features I needed.
-"""
 import logging
 import telegram
 from telegram.error import NetworkError, Unauthorized
@@ -20,7 +15,6 @@ start = True
 def start(bot):
 
     global update_id
-    # Request updates after the last update_id
     for update in bot.get_updates(offset=update_id, timeout=10):
         update_id = update.update_id + 1
 
@@ -123,21 +117,16 @@ def game(bot,update,name):
     if strike == 4:
         update.message.reply_text(f"{name}무무의 승이누~")
     elif ball == 4:
-        update.message.reply_text(f"나의 승이누~")
+        update.message.reply_text(f"나의 승이누~~")
 
     echo(bot, name)
-def exit(bot,update):
-    update.message.reply_text(f"오늘도 고맙무~")
-    return 0
+
 def main():
     """Run the bot."""
     global update_id
     global start
-    # Telegram Bot Authorization Token
-    bot = telegram.Bot('513900136:AAEjp75FyUUrsOozRBaX1zr7TaIxAI_yG-8')
 
-    # get the first pending update_id, this is so we can skip over it in case
-    # we get an "Unauthorized" exception.
+    bot = telegram.Bot('513900136:AAEjp75FyUUrsOozRBaX1zr7TaIxAI_yG-8')
 
     for update in bot.get_updates(offset=update_id, timeout=10):
         update_id = update.update_id + 1
@@ -152,14 +141,12 @@ def main():
     if(update.message.text == "/start"):
         update.message.reply_text("안녕 무무 어서와! 나는 마마무 채팅 봇이야~")
 
-
         while True:
             try:
-               start(bot)
+               echo(bot)
             except NetworkError:
                 sleep(1)
             except Unauthorized:
-                # The user has removed or blocked the bot.
                 update_id += 1
 
 if __name__ == '__main__':
